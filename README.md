@@ -21,6 +21,8 @@
 ## Documents
 
 - [AIDLC要件定義](docs/aidlc-requirements.md)
+- [受け入れ条件](docs/acceptance-criteria.md)
+- [テスト計画](docs/test-plan.md)
 - [画面設計](docs/screen-design.md)
 - [API設計](docs/api-design.md)
 - [データモデル](docs/data-model.md)
