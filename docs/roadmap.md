@@ -48,3 +48,11 @@
 4. ReactでDashboardを作る
 5. DB保存に切り替える
 6. 設定・履歴画面を追加する
+
+## AIDLC Unit/Bolt
+
+実装時の作業分解は [AIDLC Unit/Bolt定義](aidlc-units-and-bolts.md) に従う。
+進行状態は [AIDLC Progress State](aidlc-progress-state.md) と [AIDLC Progress](aidlc-progress.md) で管理する。
+
+- Unit: ユーザー価値または検証可能な成果で区切る開発単位
+- Bolt: Unitを完了させるための小さな実装・検証タスク
