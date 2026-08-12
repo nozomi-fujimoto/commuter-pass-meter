@@ -18,6 +18,42 @@
 - 出社履歴を確認する
 - 定期料金に対する回収率と差額を見る
 
+## Development
+
+### Backend
+
+```bash
+cd backend
+mvn spring-boot:run
+```
+
+Health check:
+
+```bash
+curl http://localhost:8080/api/health
+```
+
+Test:
+
+```bash
+cd backend
+mvn test
+```
+
+### Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Open:
+
+```text
+http://localhost:5173
+```
+
 ## Documents
 
 - [AIDLC要件定義](docs/aidlc-requirements.md)
@@ -30,4 +66,3 @@
 - [API設計](docs/api-design.md)
 - [データモデル](docs/data-model.md)
 - [開発ロードマップ](docs/roadmap.md)
-# commuter-pass-meter
