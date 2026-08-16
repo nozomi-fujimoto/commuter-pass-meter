@@ -1,5 +1,7 @@
 package com.example.commuterpassmeter.commuterpass;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -12,6 +14,11 @@ class InMemoryCommuterPassRepository implements CommuterPassRepository {
 
     private final AtomicLong sequence = new AtomicLong(1);
     private final Map<Long, CommuterPass> passes = new LinkedHashMap<>();
+    private final Clock clock;
+
+    InMemoryCommuterPassRepository(Clock clock) {
+        this.clock = clock;
+    }
 
     @Override
     public synchronized Optional<CommuterPass> findActiveByUserId(Long userId) {
@@ -65,7 +72,7 @@ class InMemoryCommuterPassRepository implements CommuterPassRepository {
                     pass.memo(),
                     false,
                     pass.createdAt(),
-                    pass.updatedAt());
+                    LocalDateTime.now(clock));
         });
     }
 }

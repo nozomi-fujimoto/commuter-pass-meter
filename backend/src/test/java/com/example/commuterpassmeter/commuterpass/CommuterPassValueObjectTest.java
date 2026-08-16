@@ -25,7 +25,14 @@ class CommuterPassValueObjectTest {
     void fareAmountRejectsZero() {
         assertThatThrownBy(() -> new FareAmount(0))
                 .isInstanceOf(InvalidCommuterPassException.class)
-                .hasMessage("fare amount must be at least 1");
+                .hasMessage("amount must be at least 1");
+    }
+
+    @Test
+    void fareAmountRejectsNull() {
+        assertThatThrownBy(() -> new FareAmount(null))
+                .isInstanceOf(InvalidCommuterPassException.class)
+                .hasMessage("amount is required");
     }
 
     @Test

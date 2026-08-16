@@ -13,9 +13,9 @@ public class CommuterPassService {
     private final CommuterPassRepository repository;
     private final Clock clock;
 
-    public CommuterPassService(CommuterPassRepository repository) {
+    public CommuterPassService(CommuterPassRepository repository, Clock clock) {
         this.repository = repository;
-        this.clock = Clock.systemDefaultZone();
+        this.clock = clock;
     }
 
     public CommuterPass getActive() {
