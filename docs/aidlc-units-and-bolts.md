@@ -101,6 +101,7 @@ Bolts:
 - B-01-06: Settings画面のフォームを実装する
 - B-01-07: Dashboardの定期未登録状態を実装する
 - B-01-08: API TestとFrontend手動確認を追加する
+- B-01-09: Frontendのタブ表示を画面コンポーネントへ分割する
 
 ### U-02: Attendance Recording
 
