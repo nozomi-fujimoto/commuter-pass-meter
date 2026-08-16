@@ -3,16 +3,16 @@
 ## Current Focus
 
 - Unit: U-01 Commuter Pass Settings
-- Status: todo
-- Active Bolt:
-- Last Updated: 2026-08-12
+- Status: developing
+- Active Bolt: B-01-08
+- Last Updated: 2026-08-16
 
 ## Unit Progress
 
 | Unit | Status | Current Bolt | Verification | Notes |
 | --- | --- | --- | --- | --- |
 | U-00 Project Foundation | done |  | `mvn -Dmaven.repo.local=/private/tmp/commuter-pass-meter-m2 test`, `npm run build`, `npm audit --audit-level=moderate` | Spring BootとReactの最小構成、Health API、初期Dashboardを追加 |
-| U-01 Commuter Pass Settings | todo |  |  | 定期情報の登録・更新 |
+| U-01 Commuter Pass Settings | developing | B-01-08 | `mvn -q -DskipTests compile`, `mvn -Dtest=CommuterPassValueObjectTest,CommuterPassJsonTest test`, `npm run build` | 定期情報APIとSettings画面を実装。Spring Boot API Testは無出力で停止し未完了 |
 | U-02 Attendance Recording | todo |  |  | 今日の出社記録 |
 | U-03 Dashboard Calculation | todo |  |  | 回収状況の集計と表示 |
 | U-04 Attendance History | todo |  |  | 履歴確認と削除 |
@@ -28,6 +28,14 @@
 | B-00-03 | done | `GET /api/health` を追加 | `mvn -Dmaven.repo.local=/private/tmp/commuter-pass-meter-m2 test` | Foundation確認用API |
 | B-00-04 | done | Frontendの初期Dashboard画面を追加 | `npm run build` | 定期未登録状態の入口 |
 | B-00-05 | done | READMEに起動手順と検証コマンドを追記 | Manual | Backend/Frontend手順 |
+| B-01-01 | done | `CommuterPass` modelと値オブジェクトを追加 | `mvn -Dtest=CommuterPassValueObjectTest,CommuterPassJsonTest test` | 固定ユーザー前提。StationName/FareAmount/PassPeriod/PassMemoで不変条件を保持 |
+| B-01-02 | done | in-memory `CommuterPassRepository` を追加 | `mvn -q -DskipTests compile` | 有効な定期情報は同一ユーザー1件に制限 |
+| B-01-03 | done | 作成・取得・更新Serviceを追加 | `mvn -q -DskipTests compile` | Requestを値オブジェクトへ変換してから保存 |
+| B-01-04 | done | `GET/POST/PUT /api/commuter-pass` を追加 | `mvn -q -DskipTests compile` | PUTはAPI設計に合わせて `/api/commuter-pass/{id}` |
+| B-01-05 | done | 入力値バリデーションと400/404応答を追加 | `mvn -Dtest=CommuterPassValueObjectTest,CommuterPassJsonTest test` | DTOではなく値オブジェクトでドメイン制約を検証 |
+| B-01-06 | done | Settings画面のフォームを追加 | `npm run build` | 作成済みの場合は更新として保存 |
+| B-01-07 | done | Dashboardの定期未登録/登録済み表示を追加 | `npm run build` | 未登録時はSettings導線、登録済みは区間・料金・期間を表示 |
+| B-01-08 | in_progress | API Testとドメイン/JSON Testを追加、Frontend build確認済み | `mvn -Dtest=CommuterPassValueObjectTest,CommuterPassJsonTest test`, `npm run build`; `mvn test` は無出力で停止 | Spring Boot API Test実行環境の確認が必要 |
 
 ## Decisions
 
@@ -35,11 +43,14 @@
 | --- | --- | --- |
 | 2026-08-08 | Progress StateをUnit/Boltとは別モジュールとして管理する | Unit/Boltは作業分解、Progress Stateは進行台帳として責務を分けるため |
 | 2026-08-09 | BackendはSpring Boot、FrontendはVite + React + TypeScriptで開始する | MVPのAPI/画面を小さく実装しやすく、既存資料の想定構成に合うため |
+| 2026-08-12 | U-01の初期Repositoryはin-memoryで実装する | U-06で永続化を扱うため、まずAPI/Service境界と画面連携を固める |
+| 2026-08-16 | CommuterPassの入力制約はDTOではなく値オブジェクトで表現する | ドメイン駆動の方針に合わせ、StationName/FareAmount/PassPeriod/PassMemoが不正状態を拒否するため |
 
 ## Blockers
 
 | Date | Scope | Blocker | Needed Action |
 | --- | --- | --- | --- |
+| 2026-08-12 | U-01 Spring Boot API Test | `mvn test`、Spring Boot系の個別 `mvn -Dtest=... test`、`-DforkCount=0` が無出力で停止する | Maven/Surefire実行環境を確認し、Spring Boot API Testを再実行する |
 
 ## Learn Log
 
