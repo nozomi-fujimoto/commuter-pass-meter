@@ -3,8 +3,8 @@
 ## Current Focus
 
 - Unit: U-01 Commuter Pass Settings
-- Status: developing
-- Active Bolt: B-01-09
+- Status: verifying
+- Active Bolt:
 - Last Updated: 2026-08-25
 
 ## Unit Progress
@@ -12,7 +12,7 @@
 | Unit | Status | Current Bolt | Verification | Notes |
 | --- | --- | --- | --- | --- |
 | U-00 Project Foundation | done |  | `mvn -Dmaven.repo.local=/private/tmp/commuter-pass-meter-m2 test`, `npm run build`, `npm audit --audit-level=moderate` | Spring BootとReactの最小構成、Health API、初期Dashboardを追加 |
-| U-01 Commuter Pass Settings | developing | B-01-09 | `mvn test -e`, `npm run build` | 定期情報API、Settings画面、Dashboard表示、API/ドメイン/JSON Testを実装済み。Frontendのコンポーネント分割はB-01-09で対応 |
+| U-01 Commuter Pass Settings | verifying |  | `mvn test -e`, `npm run build` | 定期情報API、Settings画面、Dashboard表示、API/ドメイン/JSON Test、Frontendコンポーネント分割を実装済み。受け入れ確認へ進む |
 | U-02 Attendance Recording | todo |  |  | 今日の出社記録 |
 | U-03 Dashboard Calculation | todo |  |  | 回収状況の集計と表示 |
 | U-04 Attendance History | todo |  |  | 履歴確認と削除 |
@@ -36,7 +36,7 @@
 | B-01-06 | done | Settings画面のフォームを追加 | `npm run build` | 作成済みの場合は更新として保存 |
 | B-01-07 | done | Dashboardの定期未登録/登録済み表示を追加 | `npm run build` | 未登録時はSettings導線、登録済みは区間・料金・期間を表示 |
 | B-01-08 | done | API Testとドメイン/JSON Testを追加し、Frontend buildも確認済み | `mvn test -e`, `npm run build` | Spring Boot API Testを含む全Backend Testが完走。`frontend/src/main.tsx` の構造改善はこのBoltから切り離す |
-| B-01-09 | todo | Frontendのタブ表示を画面コンポーネントへ分割する |  | `main.tsx` はReactエントリーポイントに寄せ、`App`、`SideNav`、`DashboardView`、`SettingsView`、`HistoryView` などへ責務を分ける |
+| B-01-09 | done | Frontendのタブ表示を画面コンポーネントへ分割 | `npm run build` | `main.tsx` をReactエントリーポイントに寄せ、`App`、`SideNav`、`DashboardView`、`SettingsView`、`HistoryView` などへ責務を分けた |
 
 ## Decisions
 
