@@ -3,16 +3,16 @@
 ## Current Focus
 
 - Unit: U-01 Commuter Pass Settings
-- Status: developing
-- Active Bolt: B-01-08
-- Last Updated: 2026-08-16
+- Status: verifying
+- Active Bolt:
+- Last Updated: 2026-08-25
 
 ## Unit Progress
 
 | Unit | Status | Current Bolt | Verification | Notes |
 | --- | --- | --- | --- | --- |
 | U-00 Project Foundation | done |  | `mvn -Dmaven.repo.local=/private/tmp/commuter-pass-meter-m2 test`, `npm run build`, `npm audit --audit-level=moderate` | Spring BootとReactの最小構成、Health API、初期Dashboardを追加 |
-| U-01 Commuter Pass Settings | developing | B-01-08 | `mvn -q -DskipTests compile`, `mvn -Dtest=CommuterPassValueObjectTest,CommuterPassJsonTest test`, `npm run build` | 定期情報APIとSettings画面を実装。Spring Boot API Testは無出力で停止し未完了 |
+| U-01 Commuter Pass Settings | verifying |  | `mvn test -e`, `npm run build` | 定期情報API、Settings画面、Dashboard表示、API/ドメイン/JSON Test、Frontendコンポーネント分割を実装済み。受け入れ確認へ進む |
 | U-02 Attendance Recording | todo |  |  | 今日の出社記録 |
 | U-03 Dashboard Calculation | todo |  |  | 回収状況の集計と表示 |
 | U-04 Attendance History | todo |  |  | 履歴確認と削除 |
@@ -35,7 +35,8 @@
 | B-01-05 | done | 入力値バリデーションと400/404応答を追加 | `mvn -Dtest=CommuterPassValueObjectTest,CommuterPassJsonTest test` | DTOではなく値オブジェクトでドメイン制約を検証 |
 | B-01-06 | done | Settings画面のフォームを追加 | `npm run build` | 作成済みの場合は更新として保存 |
 | B-01-07 | done | Dashboardの定期未登録/登録済み表示を追加 | `npm run build` | 未登録時はSettings導線、登録済みは区間・料金・期間を表示 |
-| B-01-08 | in_progress | API Testとドメイン/JSON Testを追加、Frontend build確認済み | `mvn -Dtest=CommuterPassValueObjectTest,CommuterPassJsonTest test`, `npm run build`; `mvn test` は無出力で停止 | Spring Boot API Test実行環境の確認が必要 |
+| B-01-08 | done | API Testとドメイン/JSON Testを追加し、Frontend buildも確認済み | `mvn test -e`, `npm run build` | Spring Boot API Testを含む全Backend Testが完走。`frontend/src/main.tsx` の構造改善はこのBoltから切り離す |
+| B-01-09 | done | Frontendのタブ表示を画面コンポーネントへ分割 | `npm run build` | `main.tsx` をReactエントリーポイントに寄せ、`App`、`SideNav`、`DashboardView`、`SettingsView`、`HistoryView` などへ責務を分けた |
 
 ## Decisions
 
@@ -45,12 +46,12 @@
 | 2026-08-09 | BackendはSpring Boot、FrontendはVite + React + TypeScriptで開始する | MVPのAPI/画面を小さく実装しやすく、既存資料の想定構成に合うため |
 | 2026-08-12 | U-01の初期Repositoryはin-memoryで実装する | U-06で永続化を扱うため、まずAPI/Service境界と画面連携を固める |
 | 2026-08-16 | CommuterPassの入力制約はDTOではなく値オブジェクトで表現する | ドメイン駆動の方針に合わせ、StationName/FareAmount/PassPeriod/PassMemoが不正状態を拒否するため |
+| 2026-08-17 | `frontend/src/main.tsx` のコンポーネント分割はB-01-09で扱う | 現在のBoltはAPI TestとU-01の動作確認に集中し、画面構造の改善を別Boltとしてレビューしやすくするため |
 
 ## Blockers
 
 | Date | Scope | Blocker | Needed Action |
 | --- | --- | --- | --- |
-| 2026-08-12 | U-01 Spring Boot API Test | `mvn test`、Spring Boot系の個別 `mvn -Dtest=... test`、`-DforkCount=0` が無出力で停止する | Maven/Surefire実行環境を確認し、Spring Boot API Testを再実行する |
 
 ## Learn Log
 
