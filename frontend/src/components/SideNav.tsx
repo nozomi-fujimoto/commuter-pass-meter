@@ -13,15 +13,30 @@ export function SideNav({ view, onChangeView }: SideNavProps) {
         <TrainFront aria-hidden="true" size={24} />
         <span>Pass Meter</span>
       </div>
-      <button className={`navItem ${view === 'dashboard' ? 'active' : ''}`} type="button" onClick={() => onChangeView('dashboard')}>
+      <button
+        aria-current={view === 'dashboard' ? 'page' : undefined}
+        className={`navItem ${view === 'dashboard' ? 'active' : ''}`}
+        type="button"
+        onClick={() => onChangeView('dashboard')}
+      >
         <CalendarDays aria-hidden="true" size={18} />
         Dashboard
       </button>
-      <button className={`navItem ${view === 'history' ? 'active' : ''}`} type="button" onClick={() => onChangeView('history')}>
+      <button
+        aria-current={view === 'history' ? 'page' : undefined}
+        className={`navItem ${view === 'history' ? 'active' : ''}`}
+        type="button"
+        onClick={() => onChangeView('history')}
+      >
         <History aria-hidden="true" size={18} />
         History
       </button>
-      <button className={`navItem ${view === 'settings' ? 'active' : ''}`} type="button" onClick={() => onChangeView('settings')}>
+      <button
+        aria-current={view === 'settings' ? 'page' : undefined}
+        className={`navItem ${view === 'settings' ? 'active' : ''}`}
+        type="button"
+        onClick={() => onChangeView('settings')}
+      >
         <Settings aria-hidden="true" size={18} />
         Settings
       </button>

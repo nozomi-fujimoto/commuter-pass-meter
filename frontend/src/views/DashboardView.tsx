@@ -56,13 +56,13 @@ export function DashboardView({ commuterPass, error, loading, notice, roundTripF
             </div>
           </section>
         </>
-      ) : (
+      ) : !loading ? (
         <section className="emptyState" aria-label="No commuter pass">
           <h2>定期情報を登録してください</h2>
           <p>自宅側駅、会社側駅、片道運賃、定期料金、期間を登録すると回収状況を表示できます。</p>
           <button className="secondaryButton" type="button" onClick={onOpenSettings}>Settings を開く</button>
         </section>
-      )}
+      ) : null}
     </section>
   );
 }
