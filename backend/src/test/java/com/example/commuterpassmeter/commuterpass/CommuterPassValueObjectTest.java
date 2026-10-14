@@ -7,6 +7,9 @@ import java.time.LocalDate;
 
 import org.junit.jupiter.api.Test;
 
+/**
+ * 定期券関連の値オブジェクトの入力制約を確認するテストです。
+ */
 class CommuterPassValueObjectTest {
 
     @Test
@@ -40,6 +43,22 @@ class CommuterPassValueObjectTest {
         assertThatThrownBy(() -> new PassPeriod(LocalDate.parse("2026-09-30"), LocalDate.parse("2026-09-01")))
                 .isInstanceOf(InvalidCommuterPassException.class)
                 .hasMessage("startDate must be on or before endDate");
+    }
+
+    @Test
+    void passPeriodIncludesStartAndEndDates() {
+        PassPeriod period = new PassPeriod(LocalDate.parse("2026-08-01"), LocalDate.parse("2026-08-31"));
+
+        assertThat(period.contains(LocalDate.parse("2026-08-01"))).isTrue();
+        assertThat(period.contains(LocalDate.parse("2026-08-31"))).isTrue();
+    }
+
+    @Test
+    void passPeriodExcludesOutsideDates() {
+        PassPeriod period = new PassPeriod(LocalDate.parse("2026-08-01"), LocalDate.parse("2026-08-31"));
+
+        assertThat(period.contains(LocalDate.parse("2026-07-31"))).isFalse();
+        assertThat(period.contains(LocalDate.parse("2026-09-01"))).isFalse();
     }
 
     @Test

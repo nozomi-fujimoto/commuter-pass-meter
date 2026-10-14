@@ -13,6 +13,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+/**
+ * 定期券APIの作成、取得、更新、入力エラーを確認するテストです。
+ */
 @SpringBootTest
 @AutoConfigureMockMvc
 class CommuterPassControllerTest {

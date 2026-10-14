@@ -13,6 +13,20 @@ export type CommuterPass = {
   active: boolean;
 };
 
+export type AttendanceRecord = {
+  id: number;
+  userId: number;
+  commuterPassId: number;
+  attendanceDate: string;
+  roundTripFare: number;
+  createdAt: string;
+};
+
+export type TodayAttendance = {
+  recorded: boolean;
+  record: AttendanceRecord | null;
+};
+
 export type FormState = {
   fromStation: string;
   toStation: string;

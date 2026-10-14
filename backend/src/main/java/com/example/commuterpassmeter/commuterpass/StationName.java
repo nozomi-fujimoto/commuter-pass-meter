@@ -2,6 +2,9 @@ package com.example.commuterpassmeter.commuterpass;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
+/**
+ * 定期券区間で利用する駅名です。
+ */
 public record StationName(String value) {
 
     private static final int MAX_LENGTH = 80;

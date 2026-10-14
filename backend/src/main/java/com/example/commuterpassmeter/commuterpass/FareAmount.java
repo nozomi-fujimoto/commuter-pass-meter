@@ -2,6 +2,9 @@ package com.example.commuterpassmeter.commuterpass;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
+/**
+ * 定期券料金または片道運賃の金額です。
+ */
 public record FareAmount(Integer value) {
 
     public FareAmount {
