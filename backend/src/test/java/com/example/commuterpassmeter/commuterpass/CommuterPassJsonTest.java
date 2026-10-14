@@ -11,6 +11,9 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.Test;
 
+/**
+ * 定期券モデルのJSONシリアライズ形式を確認するテストです。
+ */
 class CommuterPassJsonTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper()

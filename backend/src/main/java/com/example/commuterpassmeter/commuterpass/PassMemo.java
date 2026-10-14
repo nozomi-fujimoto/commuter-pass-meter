@@ -2,6 +2,9 @@ package com.example.commuterpassmeter.commuterpass;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
+/**
+ * 定期券情報に添える任意メモです。
+ */
 public record PassMemo(String value) {
 
     private static final int MAX_LENGTH = 200;

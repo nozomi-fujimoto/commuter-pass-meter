@@ -5,6 +5,9 @@ import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
 
+/**
+ * 定期券情報の作成、取得、更新を担当するサービスです。
+ */
 @Service
 public class CommuterPassService {
 

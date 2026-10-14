@@ -6,6 +6,9 @@ import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * ユーザーが登録した定期券情報を表すモデルです。
+ */
 public record CommuterPass(
         Long id,
         Long userId,
