@@ -4,7 +4,7 @@ import { SideNav } from './components/SideNav';
 import { DashboardView } from './views/DashboardView';
 import { HistoryView } from './views/HistoryView';
 import { SettingsView } from './views/SettingsView';
-import { CommuterPass, emptyForm, FormState, View } from './types';
+import { CommuterPass, emptyForm, FormState, TodayAttendance, View } from './types';
 
 export function App() {
   const [view, setView] = useState<View>(getInitialView);
@@ -12,6 +12,10 @@ export function App() {
   const [form, setForm] = useState<FormState>(emptyForm);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [recording, setRecording] = useState(false);
+  const [todayAttendance, setTodayAttendance] = useState<TodayAttendance | null>(null);
+  const [attendanceStatusKnown, setAttendanceStatusKnown] = useState(false);
+  const [attendanceError, setAttendanceError] = useState('');
   const [notice, setNotice] = useState('');
   const [error, setError] = useState('');
 
@@ -38,6 +42,9 @@ export function App() {
       if (response.status === 404) {
         setCommuterPass(null);
         setForm(emptyForm);
+        setTodayAttendance(null);
+        setAttendanceStatusKnown(false);
+        setAttendanceError('');
         return;
       }
       if (!response.ok) {
@@ -46,10 +53,28 @@ export function App() {
       const data = await response.json() as CommuterPass;
       setCommuterPass(data);
       setForm(toFormState(data));
+      await loadTodayAttendance();
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : '定期情報を読み込めませんでした。');
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function loadTodayAttendance() {
+    setAttendanceStatusKnown(false);
+    setTodayAttendance(null);
+    setAttendanceError('');
+    try {
+      const response = await fetch('/api/attendance-records/today');
+      if (!response.ok) {
+        throw new Error('今日の出社状態を読み込めませんでした。');
+      }
+      const data = await response.json() as TodayAttendance;
+      setTodayAttendance(data);
+      setAttendanceStatusKnown(true);
+    } catch {
+      setAttendanceError('今日の出社状態を読み込めませんでした。');
     }
   }
 
@@ -81,12 +106,41 @@ export function App() {
       const saved = await response.json() as CommuterPass;
       setCommuterPass(saved);
       setForm(toFormState(saved));
+      await loadTodayAttendance();
       setNotice('定期情報を保存しました。');
       setView('dashboard');
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : '保存できませんでした。入力内容を確認してください。');
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handleRecordAttendance() {
+    if (!attendanceStatusKnown || todayAttendance?.recorded || recording) {
+      return;
+    }
+    setRecording(true);
+    setNotice('');
+    setAttendanceError('');
+
+    try {
+      const response = await fetch('/api/attendance-records', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({}),
+      });
+      if (!response.ok) {
+        const data = await response.json().catch(() => null) as { message?: string; errors?: string[] } | null;
+        throw new Error(formatApiError(data));
+      }
+      const record = await response.json();
+      setTodayAttendance({ recorded: true, record });
+      setNotice('今日の出社を記録しました。');
+    } catch (caught) {
+      setAttendanceError(caught instanceof Error ? caught.message : '出社を記録できませんでした。');
+    } finally {
+      setRecording(false);
     }
   }
 
@@ -100,10 +154,15 @@ export function App() {
       {view === 'dashboard' && (
         <DashboardView
           commuterPass={commuterPass}
+          attendanceStatusKnown={attendanceStatusKnown}
+          attendanceError={attendanceError}
           error={error}
           loading={loading}
           notice={notice}
+          recording={recording}
           roundTripFare={roundTripFare}
+          todayAttendance={todayAttendance}
+          onRecordAttendance={handleRecordAttendance}
           onOpenSettings={() => setView('settings')}
         />
       )}

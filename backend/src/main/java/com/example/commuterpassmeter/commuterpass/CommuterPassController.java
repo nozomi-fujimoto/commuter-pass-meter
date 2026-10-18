@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * 定期券情報の作成、取得、更新を公開するREST Controllerです。
+ */
 @RestController
 @RequestMapping("/api/commuter-pass")
 public class CommuterPassController {

@@ -10,6 +10,9 @@ import java.time.ZoneId;
 
 import org.junit.jupiter.api.Test;
 
+/**
+ * 定期券Repositoryのアクティブ定期切り替えを確認するテストです。
+ */
 class InMemoryCommuterPassRepositoryTest {
 
     @Test

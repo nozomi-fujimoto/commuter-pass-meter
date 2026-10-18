@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+/**
+ * 定期券APIで発生した例外をHTTPレスポンスへ変換します。
+ */
 @RestControllerAdvice
 public class CommuterPassExceptionHandler {
 

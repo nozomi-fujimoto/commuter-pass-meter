@@ -9,6 +9,9 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.stereotype.Repository;
 
+/**
+ * 定期券情報をメモリ上に保持するRepository実装です。
+ */
 @Repository
 class InMemoryCommuterPassRepository implements CommuterPassRepository {
 

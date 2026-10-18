@@ -1,17 +1,37 @@
-import { CommuterPass } from '../types';
+import { CommuterPass, TodayAttendance } from '../types';
 import { formatYen } from '../commuterPass';
 import { StatusMessage } from '../components/StatusMessage';
 
 type DashboardViewProps = {
+  attendanceStatusKnown: boolean;
+  attendanceError: string;
   commuterPass: CommuterPass | null;
   error: string;
   loading: boolean;
   notice: string;
+  recording: boolean;
   roundTripFare: number;
+  todayAttendance: TodayAttendance | null;
+  onRecordAttendance: () => void;
   onOpenSettings: () => void;
 };
 
-export function DashboardView({ commuterPass, error, loading, notice, roundTripFare, onOpenSettings }: DashboardViewProps) {
+export function DashboardView({
+  attendanceStatusKnown,
+  attendanceError,
+  commuterPass,
+  error,
+  loading,
+  notice,
+  recording,
+  roundTripFare,
+  todayAttendance,
+  onRecordAttendance,
+  onOpenSettings,
+}: DashboardViewProps) {
+  const recordedToday = todayAttendance?.recorded ?? false;
+  const attendanceButtonLabel = recordedToday ? '記録済み' : recording ? '記録中' : '出社';
+
   return (
     <section className="content" id="dashboard">
       <header className="pageHeader">
@@ -19,10 +39,18 @@ export function DashboardView({ commuterPass, error, loading, notice, roundTripF
           <p className="eyebrow">Commuter Pass Meter</p>
           <h1>今日の出社を記録</h1>
         </div>
-        <button className="primaryButton" type="button" disabled={!commuterPass}>出社</button>
+        <button
+          className="primaryButton"
+          type="button"
+          disabled={!commuterPass || loading || recording || !attendanceStatusKnown || recordedToday}
+          onClick={onRecordAttendance}
+        >
+          {attendanceButtonLabel}
+        </button>
       </header>
 
       <StatusMessage loading={loading} error={error} notice={notice} />
+      {attendanceError && <p className="statusMessage error" role="alert">{attendanceError}</p>}
 
       {commuterPass ? (
         <>
@@ -40,6 +68,13 @@ export function DashboardView({ commuterPass, error, loading, notice, roundTripF
               <p className="metric">未記録</p>
             </div>
           </section>
+
+          {recordedToday ? (
+            <section className="attendanceState" aria-label="Today's attendance">
+              <p className="label">今日の出社</p>
+              <p className="detailValue">{todayAttendance?.record?.attendanceDate ?? '今日'} は記録済みです。</p>
+            </section>
+          ) : null}
 
           <section className="detailBand" aria-label="Commuter pass details">
             <div>
