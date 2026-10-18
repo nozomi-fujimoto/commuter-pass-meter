@@ -14,6 +14,8 @@ export function App() {
   const [saving, setSaving] = useState(false);
   const [recording, setRecording] = useState(false);
   const [todayAttendance, setTodayAttendance] = useState<TodayAttendance | null>(null);
+  const [attendanceStatusKnown, setAttendanceStatusKnown] = useState(false);
+  const [attendanceError, setAttendanceError] = useState('');
   const [notice, setNotice] = useState('');
   const [error, setError] = useState('');
 
@@ -41,6 +43,8 @@ export function App() {
         setCommuterPass(null);
         setForm(emptyForm);
         setTodayAttendance(null);
+        setAttendanceStatusKnown(false);
+        setAttendanceError('');
         return;
       }
       if (!response.ok) {
@@ -58,12 +62,20 @@ export function App() {
   }
 
   async function loadTodayAttendance() {
-    const response = await fetch('/api/attendance-records/today');
-    if (!response.ok) {
-      throw new Error('今日の出社状態を読み込めませんでした。');
+    setAttendanceStatusKnown(false);
+    setTodayAttendance(null);
+    setAttendanceError('');
+    try {
+      const response = await fetch('/api/attendance-records/today');
+      if (!response.ok) {
+        throw new Error('今日の出社状態を読み込めませんでした。');
+      }
+      const data = await response.json() as TodayAttendance;
+      setTodayAttendance(data);
+      setAttendanceStatusKnown(true);
+    } catch {
+      setAttendanceError('今日の出社状態を読み込めませんでした。');
     }
-    const data = await response.json() as TodayAttendance;
-    setTodayAttendance(data);
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -105,9 +117,12 @@ export function App() {
   }
 
   async function handleRecordAttendance() {
+    if (!attendanceStatusKnown || todayAttendance?.recorded || recording) {
+      return;
+    }
     setRecording(true);
     setNotice('');
-    setError('');
+    setAttendanceError('');
 
     try {
       const response = await fetch('/api/attendance-records', {
@@ -123,7 +138,7 @@ export function App() {
       setTodayAttendance({ recorded: true, record });
       setNotice('今日の出社を記録しました。');
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '出社を記録できませんでした。');
+      setAttendanceError(caught instanceof Error ? caught.message : '出社を記録できませんでした。');
     } finally {
       setRecording(false);
     }
@@ -139,6 +154,8 @@ export function App() {
       {view === 'dashboard' && (
         <DashboardView
           commuterPass={commuterPass}
+          attendanceStatusKnown={attendanceStatusKnown}
+          attendanceError={attendanceError}
           error={error}
           loading={loading}
           notice={notice}

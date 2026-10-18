@@ -11,6 +11,9 @@ public record FareAmount(Integer value) {
         if (value == null) {
             throw new InvalidCommuterPassException("amount is required");
         }
+        if (value > Integer.MAX_VALUE / 2) {
+            throw new InvalidCommuterPassException("amount must be at most " + Integer.MAX_VALUE / 2);
+        }
         if (value < 1) {
             throw new InvalidCommuterPassException("amount must be at least 1");
         }

@@ -3,6 +3,8 @@ import { formatYen } from '../commuterPass';
 import { StatusMessage } from '../components/StatusMessage';
 
 type DashboardViewProps = {
+  attendanceStatusKnown: boolean;
+  attendanceError: string;
   commuterPass: CommuterPass | null;
   error: string;
   loading: boolean;
@@ -15,6 +17,8 @@ type DashboardViewProps = {
 };
 
 export function DashboardView({
+  attendanceStatusKnown,
+  attendanceError,
   commuterPass,
   error,
   loading,
@@ -38,7 +42,7 @@ export function DashboardView({
         <button
           className="primaryButton"
           type="button"
-          disabled={!commuterPass || loading || recording || recordedToday}
+          disabled={!commuterPass || loading || recording || !attendanceStatusKnown || recordedToday}
           onClick={onRecordAttendance}
         >
           {attendanceButtonLabel}
@@ -46,6 +50,7 @@ export function DashboardView({
       </header>
 
       <StatusMessage loading={loading} error={error} notice={notice} />
+      {attendanceError && <p className="statusMessage error" role="alert">{attendanceError}</p>}
 
       {commuterPass ? (
         <>

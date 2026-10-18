@@ -32,6 +32,18 @@ class CommuterPassValueObjectTest {
     }
 
     @Test
+    void fareAmountAcceptsMaximumSafeAmount() {
+        assertThat(new FareAmount(Integer.MAX_VALUE / 2).value()).isEqualTo(Integer.MAX_VALUE / 2);
+    }
+
+    @Test
+    void fareAmountRejectsAmountAboveMaximum() {
+        assertThatThrownBy(() -> new FareAmount(Integer.MAX_VALUE / 2 + 1))
+                .isInstanceOf(InvalidCommuterPassException.class)
+                .hasMessage("amount must be at most " + Integer.MAX_VALUE / 2);
+    }
+
+    @Test
     void fareAmountRejectsNull() {
         assertThatThrownBy(() -> new FareAmount(null))
                 .isInstanceOf(InvalidCommuterPassException.class)
