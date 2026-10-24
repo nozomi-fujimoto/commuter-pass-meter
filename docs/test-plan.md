@@ -326,3 +326,9 @@ confusing_point:
 wanted_change:
 next_action:
 ```
+
+## 8. U-03 Calculation Verification（2026-10-18）
+
+B-03-01で `RecoveryCalculationServiceTest` を追加。UT-001〜003に加えて、定期料金と累計額の一致、回収後の残り回数0、負の出社回数拒否、int上限付近の金額・回数での累計を検証する。回収率は小数第1位に四捨五入する。
+
+`cd backend && mvn test -e`: 全38 tests成功。`cd frontend && npm run build`: 成功。Dashboard APIと画面への接続は後続Boltで確認する。

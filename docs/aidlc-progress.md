@@ -2,10 +2,10 @@
 
 ## Current Focus
 
-- Unit: U-02 Attendance Recording
-- Status: verifying
-- Active Bolt:
-- Last Updated: 2026-09-23
+- Unit: U-03 Dashboard Calculation
+- Status: developing
+- Active Bolt: （次: B-03-02）
+- Last Updated: 2026-10-18
 
 ## Unit Progress
 
@@ -14,7 +14,7 @@
 | U-00 Project Foundation | done |  | `mvn -Dmaven.repo.local=/private/tmp/commuter-pass-meter-m2 test`, `npm run build`, `npm audit --audit-level=moderate` | Spring BootとReactの最小構成、Health API、初期Dashboardを追加 |
 | U-01 Commuter Pass Settings | done |  | `mvn test -e`, `npm run build` | 定期情報API、Settings画面、Dashboard表示、API/ドメイン/JSON Test、Frontendコンポーネント分割を実装済み |
 | U-02 Attendance Recording | verifying |  | `mvn test -e`, `npm run build` | 出社記録API、日付重複防止、定期期間外拒否、今日の記録済み状態、Dashboard出社ボタンを実装済み。受け入れ確認へ進む |
-| U-03 Dashboard Calculation | todo |  |  | 回収状況の集計と表示 |
+| U-03 Dashboard Calculation | developing | 次: B-03-02 | `mvn test -e`（38 tests成功）、`npm run build` | B-03-01完了。次はDashboard API。U-02の受け入れ確認は継続 |
 | U-04 Attendance History | todo |  |  | 履歴確認と削除 |
 | U-05 MVP Experience Polish | todo |  |  | 実利用に向けた体験調整 |
 | U-06 Local Persistence Upgrade | todo |  |  | ローカル永続化 |
@@ -46,6 +46,8 @@
 | B-02-07 | done | Dashboardの出社ボタンと記録済み状態を追加 | `npm run build` | `GET /api/attendance-records/today` で今日の状態を読み込み、記録済み時はボタンを無効化 |
 | B-02-08 | done | Unit TestとAPI Testを追加 | `mvn test -e`, `npm run build` | Backend 19 tests成功。Frontend production build成功 |
 
+| B-03-01 | done | 回収計算Serviceと計算結果recordを追加 | `mvn test -e`（全38 tests成功） | UT-001〜003、損益一致、回収後、負数拒否、大きな累計金額の6 tests。API・画面接続は後続Bolt |
+
 ## Decisions
 
 | Date | Decision | Reason |
@@ -57,6 +59,8 @@
 | 2026-08-17 | `frontend/src/main.tsx` のコンポーネント分割はB-01-09で扱う | 現在のBoltはAPI TestとU-01の動作確認に集中し、画面構造の改善を別Boltとしてレビューしやすくするため |
 | 2026-09-23 | U-02では出社記録日をAPIリクエストで任意指定できるが、画面操作ではサーバーの今日を使う | 通常利用の操作を簡潔に保ちつつ、重複・期間外のAPI Testを安定して実行するため |
 
+| 2026-10-18 | B-03-01はRepositoryに依存しない純粋な計算Serviceとし、金額累計はlong、回収率はBigDecimalの小数第1位HALF_UPとする | UT-001〜003の期待値に合わせ、整数の桁あふれと浮動小数の丸め誤差を避けるため |
+
 ## Blockers
 
 | Date | Scope | Blocker | Needed Action |
@@ -66,3 +70,5 @@
 
 | Date | Unit | Observation | Next Action |
 | --- | --- | --- | --- |
+
+| 2026-10-18 | U-02 / U-03 | 既存32 testsとFrontend build成功。AC-003の累計額更新はDashboard連携に依存し、画面操作も未確認のためU-02はverifyingを維持。B-03-01の計算例と境界値は成功 | B-03-02でDashboard APIを実装し、画面連携後にFE-003/004を確認する |
