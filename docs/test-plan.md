@@ -332,3 +332,26 @@ next_action:
 B-03-01で `RecoveryCalculationServiceTest` を追加。UT-001〜003に加えて、定期料金と累計額の一致、回収後の残り回数0、負の出社回数拒否、int上限付近の金額・回数での累計を検証する。回収率は小数第1位に四捨五入する。
 
 `cd backend && mvn test -e`: 全38 tests成功。`cd frontend && npm run build`: 成功。Dashboard APIと画面への接続は後続Boltで確認する。
+
+## 9. U-03 Dashboard API Verification（2026-10-25）
+
+`DashboardControllerTest` でAPI-007を実装。固定Clock（Asia/Tokyo、2026-10-25）と実Repositoryを使用し、テストごとにコンテキストを破棄して状態を分離する。
+
+- 定期未登録時の404、出社0件時の集計
+- 回収前の12回の集計、当月のみの出社回数、他ユーザー・他定期の記録の除外
+- 登録順に依存しない出社日の降順と最近5件の上限
+- 日付省略の出社記録APIからDashboardへの反映、回収済み23回の集計、今日の記録済み状態
+- UTCとローカル日付が異なる時点でも、ローカルの今日を使用
+
+`cd backend && mvn test -e`: 全42 tests成功。画面操作（FE-003/004）は画面接続後に確認する。
+
+## 10. Dashboard Value Objects / DTO Verification（2026-10-25）
+
+B-03-09で計算入力・計算結果を値オブジェクト化し、既存の計算テストを更新した。
+`DashboardValueObjectTest` で回数・累計額の負数拒否、0の許可、回収率のnull・負数拒否、
+小数第1位への四捨五入と100%超の許可を確認する。回収率が丸めで100.0%になっても、
+差額が負なら未回収と判定する境界も確認する。
+
+`DashboardDtoTest` で、専用DTOが従来のモデルと同じJSONを返すことを確認する
+（定期情報の任意メモのnull・非null、および出社履歴の全項目）。
+`cd backend && mvn test -e`: 全51 tests成功。
