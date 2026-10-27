@@ -3,6 +3,7 @@ package com.example.commuterpassmeter.attendance;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.stereotype.Repository;
@@ -15,6 +16,15 @@ class InMemoryAttendanceRecordRepository implements AttendanceRecordRepository {
 
     private final AtomicLong sequence = new AtomicLong(1);
     private final Map<AttendanceRecordId, AttendanceRecord> records = new LinkedHashMap<>();
+
+    @Override
+    public synchronized List<AttendanceRecord> findByUserIdAndCommuterPassId(
+            AttendanceUserId userId, AttendanceCommuterPassId commuterPassId) {
+        return records.values().stream()
+                .filter(record -> record.userId().equals(userId))
+                .filter(record -> record.commuterPassId().equals(commuterPassId))
+                .toList();
+    }
 
     @Override
     public synchronized Optional<AttendanceRecord> findByUserIdAndAttendanceDate(

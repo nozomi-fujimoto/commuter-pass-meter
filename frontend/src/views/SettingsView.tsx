@@ -1,4 +1,5 @@
 import { FormEvent } from 'react';
+import { DateInput } from '../components/DateInput';
 import { Save } from 'lucide-react';
 import { FormState } from '../types';
 import { StatusMessage } from '../components/StatusMessage';
@@ -44,11 +45,11 @@ export function SettingsView({ error, form, loading, notice, saving, onChangeFor
         </label>
         <label>
           <span>開始日</span>
-          <input required type="date" value={form.startDate} onChange={(event) => onChangeForm('startDate', event.target.value)} />
+          <DateInput value={form.startDate} onChange={(value) => onChangeForm('startDate', value)} />
         </label>
         <label>
           <span>終了日</span>
-          <input required type="date" value={form.endDate} onChange={(event) => onChangeForm('endDate', event.target.value)} />
+          <DateInput value={form.endDate} onChange={(value) => onChangeForm('endDate', value)} />
         </label>
         <label className="fullWidth">
           <span>メモ</span>
