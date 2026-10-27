@@ -48,6 +48,14 @@ npm install
 npm run dev
 ```
 
+Frontend verification:
+
+```bash
+cd frontend
+npm test
+npm run build
+```
+
 Open:
 
 ```text
