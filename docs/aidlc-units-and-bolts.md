@@ -27,7 +27,7 @@ Unitは、AIDLCのDiscover、Define、Design、Develop、Learnを1周できる�
 - 必要なUnit TestまたはAPI Testが追加されている
 - 主要な手動確認手順が明確である
 - 既存の主要テストが通っている
-- Learn観点の確認メモを残せる状態になっている
+- [Unitごとの説明セッション](unit-teach-back.md)を実施し、ユーザーから理解確認完了の報告を受け、Learn Logに記録している
 
 ## 3. Bolt Definition
 

@@ -14,7 +14,7 @@
 | U-00 Project Foundation | done |  | `mvn -Dmaven.repo.local=/private/tmp/commuter-pass-meter-m2 test`, `npm run build`, `npm audit --audit-level=moderate` | Spring BootとReactの最小構成、Health API、初期Dashboardを追加 |
 | U-01 Commuter Pass Settings | done |  | `mvn test -e`, `npm run build` | 定期情報API、Settings画面、Dashboard表示、API/ドメイン/JSON Test、Frontendコンポーネント分割を実装済み |
 | U-02 Attendance Recording | verifying |  | `mvn test -e`, `npm run build` | 出社記録API、日付重複防止、定期期間外拒否、今日の記録済み状態、Dashboard出社ボタンを実装済み。受け入れ確認へ進む |
-| U-03 Dashboard Calculation | done |  | `mvn test -e`（51 tests成功）、`npm test`（16 tests成功）、`npm run build` | 2026-11-03 ユーザーより受け入れテストOKを受領。回収前・回収後・損益一致の表示を含むU-03を完了 |
+| U-03 Dashboard Calculation | done |  | `mvn test -e`（51 tests成功）、`npm test`（16 tests成功）、`npm run build` | 2026-11-03 ユーザーより受け入れテストOKを受領。実装・受け入れ済み。同日ユーザーより理解確認完了の明示を受領 |
 | U-04 Attendance History | todo | 次: B-04-01 |  | 次は出社履歴一覧APIの実装 |
 | U-05 MVP Experience Polish | todo |  |  | 実利用に向けた体験調整 |
 | U-06 Local Persistence Upgrade | todo |  |  | ローカル永続化 |
@@ -92,3 +92,7 @@
 | 2026-11-03 | U-03 | B-03-06の文言切り替えを実装。Frontend 16 tests・本番ビルド・Backend 51 tests成功。B-03-07は既存テストで充足することを確認 | U-03をverifyingへ。ブラウザで回収前後・損益一致と日付入力を受け入れ確認し、U-03完了後にU-04へ進む |
 
 | 2026-11-03 | U-03 | ユーザーより受け入れテストOKを受領。U-03をdoneへ更新 | 次はU-04 / B-04-01（出社履歴一覧API）。U-04の実装は未着手 |
+
+| 2026-11-03 | U-03 | 各Unit末尾へ別Codex会話で教える理解確認を導入し、U-03をlearningとして説明セッションを実施 | `docs/unit-teach-back.md` に従って理解を確認する |
+| 2026-11-03 | U-03 | 別Codex会話の振り返り後、開発側とコードの動作を確認。出社APIは履歴1件を保存し、Dashboard APIは対象履歴の件数と現在の定期情報から再計算することを説明。記録時点の往復運賃と現在運賃による累計の違い、回収率の丸めと差額による回収判定、0円の値オブジェクトでの拒否、保存成功・集計取得失敗時の表示を確認 | ユーザーより「U03の理解は完了としてください」と明示を受領しdoneへ。次Unitへ進むための理解確認を完了 |
+| 2026-11-03 | U-03 | 計算単体テストは正しい入力に対する計算結果を確認し、画面までの動作は保証しないことを説明。APIテストはMockMvcで実装済みでmvn testに含まれる。push・PR時の自動実行はPhase 6の予定で未導入と確認 | 記録当時の運賃を合計する方式は将来案として区別し、今回の仕様変更は行わない。理解確認で挙がった要確認事項の確認を完了 |

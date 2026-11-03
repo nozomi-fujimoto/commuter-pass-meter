@@ -93,7 +93,8 @@ docs/aidlc-progress.md
 - Bolt開始時は対象Boltを `in_progress` にする
 - Bolt完了時は `done` にし、検証結果を記録する
 - Unitの全必須Boltが完了したら `verifying` にする
-- 受け入れ条件を満たしたら `learning` または `done` にする
+- 受け入れ条件を満たしたら `learning` にし、[Unitごとの説明セッション](unit-teach-back.md)を行う
+- ユーザーから理解確認完了の報告を受け、Learn Logへ記録したら `done` にする。完了前に次のUnitへ進まない
 - 実利用から得た改善点は `Learn Log` に記録する
 - 判断を伴う変更は `Decisions` に残す
 - 進行不能な理由は `Blockers` に残す
