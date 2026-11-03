@@ -2,10 +2,10 @@
 
 ## Current Focus
 
-- Unit: U-03 Dashboard Calculation
-- Status: developing
-- Active Bolt: （次: B-03-06）
-- Last Updated: 2026-10-28
+- Unit: U-04 Attendance History
+- Status: todo
+- Active Bolt: （次: B-04-01）
+- Last Updated: 2026-11-03
 
 ## Unit Progress
 
@@ -14,8 +14,8 @@
 | U-00 Project Foundation | done |  | `mvn -Dmaven.repo.local=/private/tmp/commuter-pass-meter-m2 test`, `npm run build`, `npm audit --audit-level=moderate` | Spring BootとReactの最小構成、Health API、初期Dashboardを追加 |
 | U-01 Commuter Pass Settings | done |  | `mvn test -e`, `npm run build` | 定期情報API、Settings画面、Dashboard表示、API/ドメイン/JSON Test、Frontendコンポーネント分割を実装済み |
 | U-02 Attendance Recording | verifying |  | `mvn test -e`, `npm run build` | 出社記録API、日付重複防止、定期期間外拒否、今日の記録済み状態、Dashboard出社ボタンを実装済み。受け入れ確認へ進む |
-| U-03 Dashboard Calculation | developing | 次: B-03-06 | `npm run build`、`npm test`（表示7 tests成功）。Backend前回51 tests成功 | APIの画面接続完了。次は回収前後の文言切り替えとブラウザでの受け入れ確認 |
-| U-04 Attendance History | todo |  |  | 履歴確認と削除 |
+| U-03 Dashboard Calculation | done |  | `mvn test -e`（51 tests成功）、`npm test`（16 tests成功）、`npm run build` | 2026-11-03 ユーザーより受け入れテストOKを受領。回収前・回収後・損益一致の表示を含むU-03を完了 |
+| U-04 Attendance History | todo | 次: B-04-01 |  | 次は出社履歴一覧APIの実装 |
 | U-05 MVP Experience Polish | todo |  |  | 実利用に向けた体験調整 |
 | U-06 Local Persistence Upgrade | todo |  |  | ローカル永続化 |
 
@@ -51,7 +51,10 @@
 | B-03-04 | done | 最近の出社記録を出社日の降順で最大5件返す | `DashboardControllerTest` | 挿入順と異なるデータで検証 |
 | B-03-08 | done | API-007を実装 | `DashboardControllerTest`（4 tests成功） | 出社APIからの集計更新を含む。FEの確認は後続Bolt |
 | B-03-09 | done | AttendanceCount・NormalFareTotal・FareDifference・RecoveryRateと専用レスポンスDTOを追加 | `mvn test -e`（全51 tests成功） | 計算入力・結果は値オブジェクト、API境界で数値化。既存JSONを維持 |
-| B-03-05 | done | Dashboard APIの画面接続と集計値・最近の履歴表示 | `npm run build`、`npm test`（7 tests成功） | 出社記録・定期保存後に再取得。失敗時は集計値を隠し再読み込み導線を表示。ブラウザ操作確認は未実施 |
+| B-03-05 | done | Dashboard APIの画面接続と集計値・最近の履歴表示 | `npm run build`、`npm test`（7 tests成功） | 出社記録・定期保存後に再取得。失敗時は集計値を隠し再読み込み導線を表示。2026-11-03 U-03受け入れOKを受領 |
+
+| B-03-06 | done | 未回収額・残り回数と回収後のお得額・達成文言を切り替える | `npm test`（16 tests成功）、`npm run build` | 差額0も回収済み。差額の符号で判定し、データ取得失敗時には表示しない |
+| B-03-07 | done | B-03-01で実装済みのUT-001〜003を再確認 | `mvn test -e`（全51 tests成功） | `RecoveryCalculationServiceTest` の回収前・回収後・0件の期待値がテスト計画と一致 |
 
 ## Decisions
 
@@ -85,3 +88,7 @@
 | 2026-10-25 | U-03 | B-03-05の本番ビルドと表示7 tests成功。Dashboard APIに今日の記録状態も統一し、記録成功後の再取得失敗でも記録済み表示を保持 | B-03-06で回収前後の文言を追加し、ブラウザで定期保存・出社・再読み込み・エラー復旧を確認。U-02はverifyingを維持 |
 
 | 2026-10-28 | U-01 / U-03 | ユーザーより画面との受け入れ項目はOKとの確認。追加指摘の日付入力を年4桁・数字8桁入力後の自動整形に修正し、Frontend全11 testsと本番ビルド成功 | 新しい日付入力のブラウザ確認。B-03-06の回収前後の文言切り替えは継続 |
+
+| 2026-11-03 | U-03 | B-03-06の文言切り替えを実装。Frontend 16 tests・本番ビルド・Backend 51 tests成功。B-03-07は既存テストで充足することを確認 | U-03をverifyingへ。ブラウザで回収前後・損益一致と日付入力を受け入れ確認し、U-03完了後にU-04へ進む |
+
+| 2026-11-03 | U-03 | ユーザーより受け入れテストOKを受領。U-03をdoneへ更新 | 次はU-04 / B-04-01（出社履歴一覧API）。U-04の実装は未着手 |

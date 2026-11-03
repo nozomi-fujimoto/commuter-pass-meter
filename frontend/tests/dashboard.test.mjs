@@ -133,3 +133,34 @@ test('both settings date fields use numeric text input with four-digit year vali
   assert.match(html, /value="2026\/10\/01"/);
   assert.match(html, /value="2026\/10\/31"/);
 });
+
+
+test('shows unrecovered cost and remaining visits before recovering the pass price', () => {
+  const html = render();
+  assert.match(html, /未回収額/);
+  assert.match(html, /6,760 円/);
+  assert.match(html, /あと 11 回で定期代を回収/);
+  assert.doesNotMatch(html, /お得額|定期代を回収しました/);
+});
+
+test('shows savings after recovering the pass price', () => {
+  const html = render({ dashboard: { ...dashboard, attendanceCount: 23, normalFareTotal: 14260,
+    recoveryRate: 100.4, difference: 60, remainingAttendanceCount: 0 } });
+  assert.match(html, /お得額/);
+  assert.match(html, /今日までに 60 円お得。定期代を回収しました！/);
+  assert.match(html, /0 回/);
+  assert.doesNotMatch(html, /未回収額|あと .* 回で定期代を回収/);
+});
+
+test('treats exact break-even as recovered with zero savings', () => {
+  const html = render({ dashboard: { ...dashboard, normalFareTotal: 14200,
+    recoveryRate: 100, difference: 0, remainingAttendanceCount: 0 } });
+  assert.match(html, /今日までに 0 円お得。定期代を回収しました！/);
+  assert.match(html, /0 回/);
+  assert.doesNotMatch(html, /未回収額|あと .* 回で定期代を回収/);
+});
+
+test('keeps recovery wording hidden when dashboard data is unavailable', () => {
+  const html = render({ dashboard: null, error: '読み込み失敗' });
+  assert.doesNotMatch(html, /未回収額|お得額|定期代を回収しました|あと .* 回で定期代を回収/);
+});

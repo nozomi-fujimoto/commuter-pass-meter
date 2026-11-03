@@ -60,6 +60,15 @@ export function DashboardView({
         <>
           {dashboard && (
             <>
+              <section className="attendanceState" aria-label="定期代の回収状況">
+                <p className="label">{dashboard.difference >= 0 ? 'お得額' : '未回収額'}</p>
+                <p className="metric">{formatYen(Math.abs(dashboard.difference))}</p>
+                <p className="detailValue">
+                  {dashboard.difference >= 0
+                    ? `今日までに ${formatYen(dashboard.difference)}お得。定期代を回収しました！`
+                    : `あと ${dashboard.remainingAttendanceCount} 回で定期代を回収`}
+                </p>
+              </section>
               <section className="summaryBand" aria-label="Recovery summary">
                 <div>
                   <p className="label">定期回収率</p>
