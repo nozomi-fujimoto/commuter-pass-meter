@@ -1,3 +1,4 @@
+import { formatDateInput } from './dateInput';
 import { CommuterPass, FormState } from './types';
 
 export function getInitialView() {
@@ -14,8 +15,8 @@ export function toFormState(commuterPass: CommuterPass): FormState {
     toStation: commuterPass.toStation,
     oneWayFare: String(commuterPass.oneWayFare),
     passPrice: String(commuterPass.passPrice),
-    startDate: commuterPass.startDate,
-    endDate: commuterPass.endDate,
+    startDate: formatDateInput(commuterPass.startDate),
+    endDate: formatDateInput(commuterPass.endDate),
     memo: commuterPass.memo ?? '',
   };
 }

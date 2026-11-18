@@ -46,3 +46,16 @@ export const emptyForm: FormState = {
   endDate: '',
   memo: '',
 };
+
+export type Dashboard = {
+  commuterPass: CommuterPass;
+  attendanceCount: number;
+  monthlyAttendanceCount: number;
+  normalFareTotal: number;
+  difference: number;
+  recoveryRate: number;
+  breakEvenAttendanceCount: number;
+  remainingAttendanceCount: number;
+  hasAttendedToday: boolean;
+  recentAttendanceRecords: AttendanceRecord[];
+};

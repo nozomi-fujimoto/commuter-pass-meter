@@ -3,6 +3,8 @@ package com.example.commuterpassmeter.attendance;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -11,7 +13,7 @@ import com.example.commuterpassmeter.commuterpass.CommuterPassNotFoundException;
 import com.example.commuterpassmeter.commuterpass.CommuterPassRepository;
 
 /**
- * 出社記録の作成と今日の記録状態の取得を担当するサービスです。
+ * 出社履歴の取得、記録の作成と今日の記録状態の取得を担当するサービスです。
  */
 @Service
 public class AttendanceRecordService {
@@ -38,6 +40,18 @@ public class AttendanceRecordService {
                         new AttendanceDate(today))
                 .map(record -> new TodayAttendanceResponse(true, record))
                 .orElseGet(() -> new TodayAttendanceResponse(false, null));
+    }
+
+    public List<AttendanceRecordResponse> getHistory(LocalDate from, LocalDate to) {
+        if (from != null && to != null && from.isAfter(to)) {
+            throw new InvalidAttendanceRecordException("from must be on or before to");
+        }
+        return attendanceRecordRepository.findByUserId(new AttendanceUserId(FIXED_USER_ID)).stream()
+                .filter(record -> from == null || !record.attendanceDate().value().isBefore(from))
+                .filter(record -> to == null || !record.attendanceDate().value().isAfter(to))
+                .sorted(Comparator.comparing((AttendanceRecord record) -> record.attendanceDate().value()).reversed())
+                .map(AttendanceRecordResponse::from)
+                .toList();
     }
 
     public AttendanceRecord create(AttendanceRecordRequest request) {

@@ -1,10 +1,11 @@
-import { FormEvent, useEffect, useMemo, useState } from 'react';
+import { toApiDate } from './dateInput';
+import { FormEvent, useEffect, useState } from 'react';
 import { formatApiError, getInitialView, toFormState } from './commuterPass';
 import { SideNav } from './components/SideNav';
 import { DashboardView } from './views/DashboardView';
 import { HistoryView } from './views/HistoryView';
 import { SettingsView } from './views/SettingsView';
-import { CommuterPass, emptyForm, FormState, TodayAttendance, View } from './types';
+import { CommuterPass, emptyForm, Dashboard, FormState, View } from './types';
 
 export function App() {
   const [view, setView] = useState<View>(getInitialView);
@@ -13,68 +14,47 @@ export function App() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [recording, setRecording] = useState(false);
-  const [todayAttendance, setTodayAttendance] = useState<TodayAttendance | null>(null);
+  const [dashboard, setDashboard] = useState<Dashboard | null>(null);
+  const [recordedToday, setRecordedToday] = useState(false);
   const [attendanceStatusKnown, setAttendanceStatusKnown] = useState(false);
   const [attendanceError, setAttendanceError] = useState('');
   const [notice, setNotice] = useState('');
   const [error, setError] = useState('');
 
   useEffect(() => {
-    void loadCommuterPass();
+    void loadDashboard();
   }, []);
 
   useEffect(() => {
     window.history.replaceState(null, '', `#${view}`);
   }, [view]);
 
-  const roundTripFare = useMemo(() => {
-    if (!commuterPass) {
-      return 0;
-    }
-    return commuterPass.oneWayFare * 2;
-  }, [commuterPass]);
-
-  async function loadCommuterPass() {
+  async function loadDashboard() {
     setLoading(true);
     setError('');
+    setDashboard(null);
+    setAttendanceStatusKnown(false);
     try {
-      const response = await fetch('/api/commuter-pass');
+      const response = await fetch('/api/dashboard');
       if (response.status === 404) {
         setCommuterPass(null);
         setForm(emptyForm);
-        setTodayAttendance(null);
-        setAttendanceStatusKnown(false);
-        setAttendanceError('');
+        setRecordedToday(false);
         return;
       }
       if (!response.ok) {
-        throw new Error('定期情報を読み込めませんでした。');
+        throw new Error('回収状況を読み込めませんでした。再読み込みしてください。');
       }
-      const data = await response.json() as CommuterPass;
-      setCommuterPass(data);
-      setForm(toFormState(data));
-      await loadTodayAttendance();
+      const data = await response.json() as Dashboard;
+      setDashboard(data);
+      setCommuterPass(data.commuterPass);
+      setForm(toFormState(data.commuterPass));
+      setRecordedToday(data.hasAttendedToday);
+      setAttendanceStatusKnown(true);
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : '定期情報を読み込めませんでした。');
+      setError(caught instanceof Error ? caught.message : '回収状況を読み込めませんでした。再読み込みしてください。');
     } finally {
       setLoading(false);
-    }
-  }
-
-  async function loadTodayAttendance() {
-    setAttendanceStatusKnown(false);
-    setTodayAttendance(null);
-    setAttendanceError('');
-    try {
-      const response = await fetch('/api/attendance-records/today');
-      if (!response.ok) {
-        throw new Error('今日の出社状態を読み込めませんでした。');
-      }
-      const data = await response.json() as TodayAttendance;
-      setTodayAttendance(data);
-      setAttendanceStatusKnown(true);
-    } catch {
-      setAttendanceError('今日の出社状態を読み込めませんでした。');
     }
   }
 
@@ -90,8 +70,8 @@ export function App() {
         toStation: form.toStation.trim(),
         oneWayFare: Number(form.oneWayFare),
         passPrice: Number(form.passPrice),
-        startDate: form.startDate,
-        endDate: form.endDate,
+        startDate: toApiDate(form.startDate),
+        endDate: toApiDate(form.endDate),
         memo: form.memo.trim() || null,
       };
       const response = await fetch(commuterPass ? `/api/commuter-pass/${commuterPass.id}` : '/api/commuter-pass', {
@@ -106,7 +86,7 @@ export function App() {
       const saved = await response.json() as CommuterPass;
       setCommuterPass(saved);
       setForm(toFormState(saved));
-      await loadTodayAttendance();
+      await loadDashboard();
       setNotice('定期情報を保存しました。');
       setView('dashboard');
     } catch (caught) {
@@ -117,7 +97,7 @@ export function App() {
   }
 
   async function handleRecordAttendance() {
-    if (!attendanceStatusKnown || todayAttendance?.recorded || recording) {
+    if (!commuterPass || !attendanceStatusKnown || recordedToday || recording || loading) {
       return;
     }
     setRecording(true);
@@ -132,10 +112,13 @@ export function App() {
       });
       if (!response.ok) {
         const data = await response.json().catch(() => null) as { message?: string; errors?: string[] } | null;
+        if (response.status === 409) {
+          await loadDashboard();
+        }
         throw new Error(formatApiError(data));
       }
-      const record = await response.json();
-      setTodayAttendance({ recorded: true, record });
+      setRecordedToday(true);
+      await loadDashboard();
       setNotice('今日の出社を記録しました。');
     } catch (caught) {
       setAttendanceError(caught instanceof Error ? caught.message : '出社を記録できませんでした。');
@@ -160,8 +143,9 @@ export function App() {
           loading={loading}
           notice={notice}
           recording={recording}
-          roundTripFare={roundTripFare}
-          todayAttendance={todayAttendance}
+          dashboard={dashboard}
+          recordedToday={recordedToday}
+          onReload={() => void loadDashboard()}
           onRecordAttendance={handleRecordAttendance}
           onOpenSettings={() => setView('settings')}
         />
