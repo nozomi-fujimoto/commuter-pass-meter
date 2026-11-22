@@ -73,6 +73,44 @@ class AttendanceHistoryControllerTest {
     }
 
     @Test
+    void groupsHistoryByYearAndMonthAcrossPassesAndFiltersBeforeCounting() throws Exception {
+        save(1, 10, "2025-01-10", 620);
+        save(1, 10, "2025-12-31", 620);
+        save(1, 10, "2026-01-01", 620);
+        save(1, 11, "2026-01-02", 700);
+        save(2, 20, "2026-01-01", 900);
+        String endpoint = "/api/attendance-records/monthly-summary";
+
+        mockMvc.perform(get(endpoint))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(3))
+                .andExpect(jsonPath("$[0].month").value("2026-01"))
+                .andExpect(jsonPath("$[0].attendanceCount").value(2))
+                .andExpect(jsonPath("$[1].month").value("2025-12"))
+                .andExpect(jsonPath("$[1].attendanceCount").value(1))
+                .andExpect(jsonPath("$[2].month").value("2025-01"))
+                .andExpect(jsonPath("$[2].attendanceCount").value(1));
+        mockMvc.perform(get(endpoint).param("from", "2025-12-31").param("to", "2026-01-01"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].attendanceCount").value(1))
+                .andExpect(jsonPath("$[1].attendanceCount").value(1));
+        mockMvc.perform(get(endpoint).param("from", "2026-02-01"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(0));
+    }
+
+    @Test
+    void rejectsInvalidMonthlySummaryRanges() throws Exception {
+        String endpoint = "/api/attendance-records/monthly-summary";
+        mockMvc.perform(get(endpoint).param("from", "2026-02-01").param("to", "2026-01-01"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("from must be on or before to"));
+        mockMvc.perform(get(endpoint).param("to", "2026-13-01"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void rejectsReversedRangeAndInvalidDates() throws Exception {
         mockMvc.perform(get("/api/attendance-records").param("from", "2026-10-20").param("to", "2026-10-01"))
                 .andExpect(status().isBadRequest())

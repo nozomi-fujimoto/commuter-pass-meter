@@ -3,8 +3,12 @@ package com.example.commuterpassmeter.attendance;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
 
@@ -43,15 +47,30 @@ public class AttendanceRecordService {
     }
 
     public List<AttendanceRecordResponse> getHistory(LocalDate from, LocalDate to) {
+        return historyRecords(from, to)
+                .sorted(Comparator.comparing((AttendanceRecord record) -> record.attendanceDate().value()).reversed())
+                .map(AttendanceRecordResponse::from)
+                .toList();
+    }
+
+    public List<MonthlyAttendanceResponse> getMonthlySummary(LocalDate from, LocalDate to) {
+        return historyRecords(from, to)
+                .collect(Collectors.groupingBy(
+                        record -> YearMonth.from(record.attendanceDate().value()),
+                        Collectors.counting()))
+                .entrySet().stream()
+                .sorted(Map.Entry.comparingByKey(Comparator.reverseOrder()))
+                .map(entry -> new MonthlyAttendanceResponse(entry.getKey().toString(), entry.getValue()))
+                .toList();
+    }
+
+    private Stream<AttendanceRecord> historyRecords(LocalDate from, LocalDate to) {
         if (from != null && to != null && from.isAfter(to)) {
             throw new InvalidAttendanceRecordException("from must be on or before to");
         }
         return attendanceRecordRepository.findByUserId(new AttendanceUserId(FIXED_USER_ID)).stream()
                 .filter(record -> from == null || !record.attendanceDate().value().isBefore(from))
-                .filter(record -> to == null || !record.attendanceDate().value().isAfter(to))
-                .sorted(Comparator.comparing((AttendanceRecord record) -> record.attendanceDate().value()).reversed())
-                .map(AttendanceRecordResponse::from)
-                .toList();
+                .filter(record -> to == null || !record.attendanceDate().value().isAfter(to));
     }
 
     public AttendanceRecord create(AttendanceRecordRequest request) {

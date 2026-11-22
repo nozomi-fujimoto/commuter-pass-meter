@@ -81,6 +81,18 @@
 ]
 ```
 
+### GET /api/attendance-records/monthly-summary
+
+固定ユーザーの全定期の出社履歴を、出社日の年月ごとに集計する。記録がある月を新しい順で返す。対象が0件の場合は `200` と空配列を返す。
+
+履歴一覧と同じ任意の `from` / `to`（`YYYY-MM-DD`）を指定できる。指定した境界日を含む範囲に絞ってから集計する。不正日付や逆転範囲は `400` を返す。
+
+```json
+[
+  { "month": "2026-08", "attendanceCount": 3 }
+]
+```
+
 ### POST /api/attendance-records
 
 今日の出社を記録する。

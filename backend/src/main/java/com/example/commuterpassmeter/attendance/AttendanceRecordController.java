@@ -33,6 +33,13 @@ public class AttendanceRecordController {
         return service.getHistory(from, to);
     }
 
+    @GetMapping("/monthly-summary")
+    public List<MonthlyAttendanceResponse> getMonthlySummary(
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
+        return service.getMonthlySummary(from, to);
+    }
+
     @GetMapping("/today")
     public TodayAttendanceResponse getToday() {
         return service.getToday();

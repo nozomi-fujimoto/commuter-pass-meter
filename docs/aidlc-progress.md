@@ -4,8 +4,8 @@
 
 - Unit: U-04 Attendance History
 - Status: developing
-- Active Bolt: （次: B-04-02）
-- Last Updated: 2026-11-03
+- Active Bolt: （次: B-04-03）
+- Last Updated: 2026-11-18
 
 ## Unit Progress
 
@@ -15,7 +15,7 @@
 | U-01 Commuter Pass Settings | done |  | `mvn test -e`, `npm run build` | 定期情報API、Settings画面、Dashboard表示、API/ドメイン/JSON Test、Frontendコンポーネント分割を実装済み |
 | U-02 Attendance Recording | verifying |  | `mvn test -e`, `npm run build` | 出社記録API、日付重複防止、定期期間外拒否、今日の記録済み状態、Dashboard出社ボタンを実装済み。受け入れ確認へ進む |
 | U-03 Dashboard Calculation | done |  | `mvn test -e`（51 tests成功）、`npm test`（16 tests成功）、`npm run build` | 2026-11-03 ユーザーより受け入れテストOKを受領。実装・受け入れ済み。同日ユーザーより理解確認完了の明示を受領 |
-| U-04 Attendance History | developing | 次: B-04-02 | `mvn test -e`（全55 tests成功） | B-04-01の履歴一覧API完了。U-03理解確認完了。次は月別出社回数集計 |
+| U-04 Attendance History | developing | 次: B-04-03 | `mvn test -e`（全57 tests成功） | B-04-02の月別出社回数集計API完了。次は削除API |
 | U-05 MVP Experience Polish | todo |  |  | 実利用に向けた体験調整 |
 | U-06 Local Persistence Upgrade | todo |  |  | ローカル永続化 |
 
@@ -57,6 +57,7 @@
 | B-03-07 | done | B-03-01で実装済みのUT-001〜003を再確認 | `mvn test -e`（全51 tests成功） | `RecoveryCalculationServiceTest` の回収前・回収後・0件の期待値がテスト計画と一致 |
 
 | B-04-01 | done | 出社日の降順で固定ユーザーの履歴を返す一覧APIと期間絞り込みを追加 | `mvn test -e`（全55 tests成功） | 全定期を対象。期間境界を含み、不正日付・逆転範囲は400。専用DTOで記録時点の運賃を返す |
+| B-04-02 | done | 月別出社回数の集計APIを追加 | `mvn test -e`（全57 tests成功） | 履歴一覧と同じ日付条件で絞ってから集計し、新しい年月順に返す |
 
 ## Decisions
 
